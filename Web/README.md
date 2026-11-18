@@ -1,7 +1,7 @@
 # RelayFleet — Web（Laravel 13 / PHP 8.3+）
 
 「コミュニティ機体シェアシステム_設計書.md」（RelayFleet 実装仕様書）に基づく実装。
-このフォルダはWeb側のみ。Windowsアプリは `../RelayFleet-App` を参照。
+このフォルダはWeb側のみ。Windowsアプリは `../App` を参照。
 
 ## 実装状況（正直な棚卸し）
 
