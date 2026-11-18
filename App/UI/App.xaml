@@ -1,0 +1,199 @@
+<Application x:Class="RelayFleetTracker.UI.App"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             StartupUri="MainWindow.xaml"
+             ShutdownMode="OnExplicitShutdown">
+    <Application.Resources>
+        <!--
+          テーマ参考: Webサイト側(resources/views/layouts/app.blade.php)の白基調+水色アクセントに合わせる。
+          Webはgoogle fontsのInter/Noto Sans JPを使っているが、WPFで外部フォントを埋め込むと配布が
+          重くなるため、システム標準で近い印象になる Segoe UI / Yu Gothic UI で代替する（確度: 見た目の近似）。
+        -->
+        <FontFamily x:Key="RfFontFamily">Yu Gothic UI, Segoe UI, sans-serif</FontFamily>
+
+        <SolidColorBrush x:Key="RfSky" Color="#0EA5E9"/>
+        <SolidColorBrush x:Key="RfSkyHover" Color="#38BDF8"/>
+        <SolidColorBrush x:Key="RfSkyLight" Color="#F0F9FF"/>
+        <SolidColorBrush x:Key="RfSkyBorder" Color="#BAE6FD"/>
+        <SolidColorBrush x:Key="RfTextPrimary" Color="#0F172A"/>
+        <SolidColorBrush x:Key="RfTextSecondary" Color="#64748B"/>
+        <SolidColorBrush x:Key="RfTextMuted" Color="#94A3B8"/>
+        <SolidColorBrush x:Key="RfBorder" Color="#E2E8F0"/>
+        <SolidColorBrush x:Key="RfCardBg" Color="#FFFFFF"/>
+        <SolidColorBrush x:Key="RfPageBg" Color="#FFFFFF"/>
+        <SolidColorBrush x:Key="RfRoseText" Color="#E11D48"/>
+
+        <!-- カード風コンテナ -->
+        <Style x:Key="RfCard" TargetType="Border">
+            <Setter Property="Background" Value="{StaticResource RfCardBg}"/>
+            <Setter Property="BorderBrush" Value="{StaticResource RfBorder}"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="CornerRadius" Value="14"/>
+            <Setter Property="Padding" Value="16"/>
+            <Setter Property="SnapsToDevicePixels" Value="True"/>
+            <Setter Property="Effect">
+                <Setter.Value>
+                    <DropShadowEffect Color="#0F172A" Opacity="0.06" BlurRadius="12" ShadowDepth="2" Direction="270"/>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- 見出し -->
+        <Style x:Key="RfSectionTitle" TargetType="TextBlock">
+            <Setter Property="FontFamily" Value="{StaticResource RfFontFamily}"/>
+            <Setter Property="FontSize" Value="13"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Foreground" Value="{StaticResource RfTextPrimary}"/>
+            <Setter Property="Margin" Value="0,0,0,8"/>
+        </Style>
+
+        <Style x:Key="RfLabel" TargetType="TextBlock">
+            <Setter Property="FontFamily" Value="{StaticResource RfFontFamily}"/>
+            <Setter Property="FontSize" Value="12"/>
+            <Setter Property="Foreground" Value="{StaticResource RfTextSecondary}"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+        </Style>
+
+        <!-- ボタン（プライマリ: 水色） -->
+        <Style x:Key="RfPrimaryButton" TargetType="Button">
+            <Setter Property="FontFamily" Value="{StaticResource RfFontFamily}"/>
+            <Setter Property="FontSize" Value="12"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="Background" Value="{StaticResource RfSky}"/>
+            <Setter Property="Padding" Value="14,7"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="bd" Background="{TemplateBinding Background}" CornerRadius="8" SnapsToDevicePixels="True">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"
+                                               Margin="{TemplateBinding Padding}"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="bd" Property="Background" Value="{StaticResource RfSkyHover}"/>
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter TargetName="bd" Property="Opacity" Value="0.45"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- ボタン（セカンダリ: 白地に枠線） -->
+        <Style x:Key="RfSecondaryButton" TargetType="Button" BasedOn="{StaticResource RfPrimaryButton}">
+            <Setter Property="Foreground" Value="{StaticResource RfTextSecondary}"/>
+            <Setter Property="Background" Value="White"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="bd" Background="{TemplateBinding Background}" BorderBrush="{StaticResource RfBorder}"
+                                BorderThickness="1" CornerRadius="8" SnapsToDevicePixels="True">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"
+                                               Margin="{TemplateBinding Padding}"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="bd" Property="Background" Value="#F8FAFC"/>
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter TargetName="bd" Property="Opacity" Value="0.45"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- テキストのみの控えめなリンク風ボタン（開発者ログなど） -->
+        <Style x:Key="RfLinkButton" TargetType="Button">
+            <Setter Property="FontFamily" Value="{StaticResource RfFontFamily}"/>
+            <Setter Property="FontSize" Value="11"/>
+            <Setter Property="Foreground" Value="{StaticResource RfTextMuted}"/>
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="Transparent">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Foreground" Value="{StaticResource RfSky}"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <!-- 入力欄共通 -->
+        <Style x:Key="RfTextBox" TargetType="TextBox">
+            <Setter Property="FontFamily" Value="{StaticResource RfFontFamily}"/>
+            <Setter Property="FontSize" Value="12"/>
+            <Setter Property="Padding" Value="8,6"/>
+            <Setter Property="Background" Value="White"/>
+            <Setter Property="Foreground" Value="{StaticResource RfTextPrimary}"/>
+            <Setter Property="BorderBrush" Value="{StaticResource RfBorder}"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="TextBox">
+                        <Border x:Name="bd" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="8">
+                            <ScrollViewer x:Name="PART_ContentHost" Margin="{TemplateBinding Padding}"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsFocused" Value="True">
+                                <Setter TargetName="bd" Property="BorderBrush" Value="{StaticResource RfSky}"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="RfComboBox" TargetType="ComboBox">
+            <Setter Property="FontFamily" Value="{StaticResource RfFontFamily}"/>
+            <Setter Property="FontSize" Value="12"/>
+            <Setter Property="Padding" Value="8,6"/>
+            <Setter Property="Background" Value="White"/>
+            <Setter Property="Foreground" Value="{StaticResource RfTextPrimary}"/>
+            <Setter Property="BorderBrush" Value="{StaticResource RfBorder}"/>
+            <Setter Property="BorderThickness" Value="1"/>
+        </Style>
+
+        <Style x:Key="RfListBox" TargetType="ListBox">
+            <Setter Property="FontFamily" Value="Consolas, Segoe UI"/>
+            <Setter Property="FontSize" Value="11"/>
+            <Setter Property="Background" Value="#0F172A"/>
+            <Setter Property="Foreground" Value="#E2E8F0"/>
+            <Setter Property="BorderBrush" Value="{StaticResource RfBorder}"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Padding" Value="8"/>
+        </Style>
+
+        <!-- Window既定（背景・文字色・フォントを白×水色テーマに統一） -->
+        <Style TargetType="Window">
+            <Setter Property="Background" Value="{StaticResource RfPageBg}"/>
+            <Setter Property="FontFamily" Value="{StaticResource RfFontFamily}"/>
+            <Setter Property="TextElement.Foreground" Value="{StaticResource RfTextPrimary}"/>
+        </Style>
+
+        <Style TargetType="TextBlock">
+            <Setter Property="FontFamily" Value="{StaticResource RfFontFamily}"/>
+            <Setter Property="Foreground" Value="{StaticResource RfTextPrimary}"/>
+        </Style>
+
+        <Style TargetType="Button" BasedOn="{StaticResource RfPrimaryButton}"/>
+        <Style TargetType="TextBox" BasedOn="{StaticResource RfTextBox}"/>
+        <Style TargetType="ComboBox" BasedOn="{StaticResource RfComboBox}"/>
+    </Application.Resources>
+</Application>

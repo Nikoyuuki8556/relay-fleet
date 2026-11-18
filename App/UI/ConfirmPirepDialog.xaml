@@ -1,0 +1,29 @@
+<Window x:Class="RelayFleetTracker.UI.ConfirmPirepDialog"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="フライト確認 — RelayFleetTracker" Height="360" Width="380"
+        WindowStartupLocation="CenterOwner" ResizeMode="NoResize">
+    <Border Style="{StaticResource RfCard}" Margin="14">
+        <StackPanel>
+            <TextBlock Text="フライト確認" Style="{StaticResource RfSectionTitle}"/>
+            <TextBlock Text="以下の内容でPIREPを提出します。修正が必要な場合はキャンセルしてください。"
+                       Style="{StaticResource RfLabel}" TextWrapping="Wrap" Margin="0,0,0,12"/>
+
+            <TextBlock Text="出発空港" Style="{StaticResource RfLabel}" Margin="0,0,0,4"/>
+            <TextBox x:Name="DepartureIcaoBox" Margin="0,0,0,10"/>
+
+            <TextBlock Text="到着空港" Style="{StaticResource RfLabel}" Margin="0,0,0,4"/>
+            <TextBox x:Name="ArrivalIcaoBox" Margin="0,0,0,10"/>
+
+            <TextBlock Text="到着スポット（任意）" Style="{StaticResource RfLabel}" Margin="0,0,0,4"/>
+            <TextBox x:Name="ArrivalSpotBox" Margin="0,0,0,10"/>
+
+            <TextBlock x:Name="SummaryText" Style="{StaticResource RfLabel}" Margin="0,0,0,14" TextWrapping="Wrap"/>
+
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                <Button Content="キャンセル" Style="{StaticResource RfSecondaryButton}" Margin="0,0,8,0" Click="CancelButton_OnClick"/>
+                <Button Content="送信" IsDefault="True" Click="ConfirmButton_OnClick"/>
+            </StackPanel>
+        </StackPanel>
+    </Border>
+</Window>

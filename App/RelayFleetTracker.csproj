@@ -1,0 +1,60 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <!-- 設計書は.NET 8指定だったが、.NET 8は2026年11月にサポート終了するため
+         現行LTSの.NET 10(2028年11月まで)に変更（ユーザー確認済み）。 -->
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net10.0-windows</TargetFramework>
+    <UseWPF>true</UseWPF>
+    <UseWindowsForms>true</UseWindowsForms> <!-- NotifyIcon(トレイアイコン)用 -->
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <RootNamespace>RelayFleetTracker</RootNamespace>
+    <AssemblyName>RelayFleetTracker</AssemblyName>
+    <Platforms>x64</Platforms>
+    <LangVersion>latest</LangVersion>
+  </PropertyGroup>
+
+  <!--
+    MSFS SimConnect参照について（7.2節）。
+    Microsoft.FlightSimulator.SimConnect.dll はMSFS SDKに同梱される再配布不可のDLLのため
+    NuGetでは配布されない。MSFS2020 SDKをインストールし、環境変数 MSFS_SDK を
+    「C:\MSFS SDK」のようなSDKルートに設定してビルドすると、SimConnect参照が有効になり
+    SimAdapters/MsfsAdapter.cs のRFT_MSFS_SDKブロックがコンパイルされる。
+    未設定の場合はスタブ実装（起動時に例外で分かりやすく通知）にフォールバックするため、
+    SDKを持たない環境でもソリューション全体がビルドできる。
+  -->
+  <PropertyGroup Condition="'$(MSFS_SDK)' != ''">
+    <DefineConstants>$(DefineConstants);RFT_MSFS_SDK</DefineConstants>
+  </PropertyGroup>
+  <ItemGroup Condition="'$(MSFS_SDK)' != ''">
+    <Reference Include="Microsoft.FlightSimulator.SimConnect">
+      <HintPath>$(MSFS_SDK)\SimConnect SDK\lib\managed\Microsoft.FlightSimulator.SimConnect.dll</HintPath>
+      <Private>true</Private>
+    </Reference>
+  </ItemGroup>
+
+  <!--
+    App.xamlがプロジェクト直下ではなくUIフォルダにあるため、SDKの既定globが
+    ApplicationDefinition(エントリポイント/Main生成用)ではなくPageとして拾ってしまうケースがある。
+    (CS5001: 適切な静的Mainメソッドが無い、という形で顕在化する。)
+    明示的にApplicationDefinitionとして宣言し、Page側からは除外して確実にする。
+  -->
+  <ItemGroup>
+    <Page Remove="UI\App.xaml" />
+    <ApplicationDefinition Include="UI\App.xaml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Data.Sqlite" Version="9.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="Core\Resources\airports_seed.csv" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="appsettings.json" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+
+</Project>

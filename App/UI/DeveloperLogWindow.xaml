@@ -1,0 +1,20 @@
+<Window x:Class="RelayFleetTracker.UI.DeveloperLogWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="開発者ログ — RelayFleetTracker" Height="420" Width="560"
+        WindowStartupLocation="CenterOwner">
+    <Grid Margin="16">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <StackPanel Grid.Row="0" Margin="0,0,0,10">
+            <TextBlock Text="開発者ログ" Style="{StaticResource RfSectionTitle}"/>
+            <TextBlock Text="通常操作には不要な内部ログです。不具合報告の際にご利用ください。"
+                       Style="{StaticResource RfLabel}" TextWrapping="Wrap"/>
+        </StackPanel>
+
+        <ListBox x:Name="LogListBox" Grid.Row="1" Style="{StaticResource RfListBox}"/>
+    </Grid>
+</Window>

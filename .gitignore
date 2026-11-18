@@ -1,0 +1,22 @@
+# --- secrets: real env files (keep only .example) ---
+Web/.env
+Web/.env.*
+!Web/.env.example
+.env
+.env.*
+!.env.example
+
+# --- .NET build output (App) ---
+**/bin/
+**/obj/
+*.user
+
+# --- Laravel deps / runtime (Web) ---
+Web/vendor/
+Web/node_modules/
+Web/public/build/
+Web/public/hot
+
+# push helper (local only)
+push_to_github.bat
+push_result.txt
